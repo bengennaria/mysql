@@ -9,13 +9,13 @@ SHELL = bash
 
 # DOCKER_REGISTRY: Nothing, or 'registry:5000/'
 DOCKER_REGISTRY ?= docker.io/
-# DOCKER_USERNAME: Nothing, or 'biarms'
+# DOCKER_USERNAME: Nothing, or 'bengennaria'
 DOCKER_USERNAME ?=
 # DOCKER_PASSWORD: Nothing, or '********'
 DOCKER_PASSWORD ?=
 # BETA_VERSION: Nothing, or '-beta-123'
 BETA_VERSION ?=
-DOCKER_IMAGE_NAME = biarms/mysql
+DOCKER_IMAGE_NAME = bengennaria/mysql
 DOCKER_IMAGE_VERSION ?=
 MYSQL_VERSION_ARM32V6 = 5.5.60
 MYSQL_VERSION_5_5 = 5.5.62
@@ -57,8 +57,8 @@ check-docker-login: check-binaries
 	    echo "DOCKER_USERNAME and DOCKER_PASSWORD env variables are mandatory for this kind of build"; \
 	    echo "Consider one of these alternatives: "; \
 	    echo "  - make build"; \
-	    echo "  - DOCKER_USERNAME=biarms DOCKER_PASSWORD=******** BETA_VERSION='-local-test-pushed-on-docker-io' make"; \
-	    echo "  - DOCKER_USERNAME=biarms DOCKER_PASSWORD=******** make circleci-local-build"; \
+	    echo "  - DOCKER_USERNAME=bengennaria DOCKER_PASSWORD=******** BETA_VERSION='-local-test-pushed-on-docker-io' make"; \
+	    echo "  - DOCKER_USERNAME=bengennaria DOCKER_PASSWORD=******** make circleci-local-build"; \
 	    exit -1; \
 	  fi
 
@@ -109,7 +109,7 @@ create-and-push-manifests: #ideally, should reference 'check-docker-login' and '
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" --os linux --arch arm64 --variant v8
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-amd64${BETA_VERSION}" --os linux --arch amd64
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}"
-	# biarms/mysql:5
+	# bengennaria/mysql:5
 	# DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_ARM32V6}-linux-arm32v6${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm32v7${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-amd64${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_ARM32V6}-linux-arm32v6${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-amd64${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_ARM32V6}-linux-arm32v6${BETA_VERSION}" --os linux --arch arm --variant v6
@@ -117,7 +117,7 @@ create-and-push-manifests: #ideally, should reference 'check-docker-login' and '
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" --os linux --arch arm64 --variant v8
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-amd64${BETA_VERSION}" --os linux --arch amd64
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}"
-	# biarms/mysql:5.5
+	# bengennaria/mysql:5.5
 	# DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_ARM32V6}-linux-arm32v6${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-arm32v7${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-arm64v8${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-amd64${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_ARM32V6}-linux-arm32v6${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-arm64v8${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-amd64${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_ARM32V6}-linux-arm32v6${BETA_VERSION}" --os linux --arch arm --variant v6
@@ -126,19 +126,19 @@ create-and-push-manifests: #ideally, should reference 'check-docker-login' and '
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.5${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-amd64${BETA_VERSION}" --os linux --arch amd64
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.5${BETA_VERSION}"
 	# !!!!! WARNING !!!!! Workaround for https://github.com/biarms/mysql/issues/4 - end
-	# biarms/mysql:5.7
+	# bengennaria/mysql:5.7
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.7${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm32v7${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-amd64${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.7${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm32v7${BETA_VERSION}" --os linux --arch arm --variant v7
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.7${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" --os linux --arch arm64 --variant v8
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.7${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-amd64${BETA_VERSION}" --os linux --arch amd64
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.7${BETA_VERSION}"
-	# biarms/mysql:5.5.62
+	# bengennaria/mysql:5.5.62
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-arm32v7${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-arm64v8${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-amd64${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-arm32v7${BETA_VERSION}" --os linux --arch arm --variant v7
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-arm64v8${BETA_VERSION}" --os linux --arch arm64 --variant v8
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-amd64${BETA_VERSION}" --os linux --arch amd64
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}"
-	# biarms/mysql:5.7.32 # It is a good idea to push this one at the end...
+	# bengennaria/mysql:5.7.32 # It is a good idea to push this one at the end...
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm32v7${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-amd64${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm32v7${BETA_VERSION}" --os linux --arch arm --variant v7
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" --os linux --arch arm64 --variant v8
@@ -156,27 +156,27 @@ display-manifests:
 
 test-manifests:
 	# Count the nb of manifests line
-	# Test that there are exactly 3 entries on the biarms/mysql:5 manifest, than ensure that arm/v6 exist in biarms/mysql:5 manifest, but arm/v7 should not !
+	# Test that there are exactly 3 entries on the bengennaria/mysql:5 manifest, than ensure that arm/v6 exist in bengennaria/mysql:5 manifest, but arm/v7 should not !
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}" | grep linux | wc -l | xargs) = 3
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}" | grep -c "arm/v6") = 1
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5${BETA_VERSION}" | grep -c "arm/v7") = 0
-	# Same kind of tests of biarms/mysql:5.5
+	# Same kind of tests of bengennaria/mysql:5.5
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.5${BETA_VERSION}" | grep linux | wc -l | xargs) = 3
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.5${BETA_VERSION}" | grep -c "arm/v6") = 1
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.5${BETA_VERSION}" | grep -c "arm/v7") = 0
-	# Same kind of tests of biarms/mysql:5.7
+	# Same kind of tests of bengennaria/mysql:5.7
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.7${BETA_VERSION}" | grep linux | wc -l | xargs) = 3
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.7${BETA_VERSION}" | grep -c "arm/v6") = 0
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:5.7${BETA_VERSION}" | grep -c "arm/v7") = 1
-	# Same kind of tests of biarms/mysql:5.5.62
+	# Same kind of tests of bengennaria/mysql:5.5.62
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" | grep linux | wc -l | xargs) = 3
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" | grep -c "arm/v6") = 0
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" | grep -c "arm/v7") = 1
-	# Same kind of tests of biarms/mysql:5.7.33
+	# Same kind of tests of bengennaria/mysql:5.7.33
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" | grep linux | wc -l | xargs) = 3
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" | grep -c "arm/v6") = 0
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" | grep -c "arm/v7") = 1
-	# Same kind of tests of biarms/mysql:latest
+	# Same kind of tests of bengennaria/mysql:latest
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}" | grep linux | wc -l | xargs) = 3
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}" | grep -c "arm/v6") = 1
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:latest${BETA_VERSION}" | grep -c "arm/v7") = 0
@@ -377,8 +377,8 @@ rebuild-one-image: rmi-one-image build-one-image
 
 # build-manifest-with-manifest-tool-deprecated:
 # 	# When https://github.com/docker/cli/pull/138 merged branch will be part of an official release:
-# 	# docker manifest create biarms/mysql biarms/mysql-arm
-# 	# docker manifest annotate biarms/mysql biarms/mysql-arm --os linux --arch arm
+# 	# docker manifest create bengennaria/mysql bengennaria/mysql-arm
+# 	# docker manifest annotate bengennaria/mysql bengennaria/mysql-arm --os linux --arch arm
 # 	# docker manifest push new-list-ref-name
 # 	#
 # 	# In the mean time, I use: https://github.com/estesp/manifest-tool
@@ -386,22 +386,22 @@ rebuild-one-image: rmi-one-image build-one-image
 # 	# sudo chmod +x /usr/local/bin/manifest-tool
 # 	echo "image: $(DOCKER_REGISTRY)$(DOCKER_IMAGE_NAME):5" > manifest.yaml
 # 	echo "manifests:" >> manifest.yaml
-# 	echo "  - image: $(DOCKER_REGISTRY)biarms/mysql:5.5.62-linux-armv6l " >> manifest.yaml
+# 	echo "  - image: $(DOCKER_REGISTRY)bengennaria/mysql:5.5.62-linux-armv6l " >> manifest.yaml
 # 	echo "    platform: " >> manifest.yaml
 # 	echo "      os: linux " >> manifest.yaml
 # 	echo "      architecture: arm " >> manifest.yaml
 # 	echo "      variant: v6 " >> manifest.yaml
-# 	echo "  - image: $(DOCKER_REGISTRY)biarms/mysql:5.5.61-linux-armv7l " >> manifest.yaml
+# 	echo "  - image: $(DOCKER_REGISTRY)bengennaria/mysql:5.5.61-linux-armv7l " >> manifest.yaml
 # 	echo "    platform: " >> manifest.yaml
 # 	echo "      os: linux " >> manifest.yaml
 # 	echo "      architecture: arm " >> manifest.yaml
 # 	echo "      variant: v7 " >> manifest.yaml
-# 	echo "  - image: $(DOCKER_REGISTRY)biarms/mysql:5.5.61-linux-aarch64 " >> manifest.yaml
+# 	echo "  - image: $(DOCKER_REGISTRY)bengennaria/mysql:5.5.61-linux-aarch64 " >> manifest.yaml
 # 	echo "    platform: " >> manifest.yaml
 # 	echo "      os: linux " >> manifest.yaml
 # 	echo "      architecture: arm64 " >> manifest.yaml
 # 	echo "      variant: v8 " >> manifest.yaml
-# 	echo "  - image: $(DOCKER_REGISTRY)biarms/mysql:5.5.61-linux-aarch64 " >> manifest.yaml
+# 	echo "  - image: $(DOCKER_REGISTRY)bengennaria/mysql:5.5.61-linux-aarch64 " >> manifest.yaml
 # 	echo "    platform: " >> manifest.yaml
 # 	echo "      os: linux " >> manifest.yaml
 # 	echo "      architecture: arm64 " >> manifest.yaml
@@ -417,13 +417,13 @@ rebuild-one-image: rmi-one-image build-one-image
 # 	# docker version
 # 	#
 # 	#
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate biarms/mysql:5 biarms/mysql:5.5.60-linux-armv6l  --os linux --arch arm   --variant v6
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate biarms/mysql:5 biarms/mysql:5.5.61-linux-armv7l  --os linux --arch arm   --variant v7
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate biarms/mysql:5 biarms/mysql:5.5.61-linux-aarch64 --os linux --arch arm64 --variant v8
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push biarms/mysql:5
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate bengennaria/mysql:5 bengennaria/mysql:5.5.60-linux-armv6l  --os linux --arch arm   --variant v6
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate bengennaria/mysql:5 bengennaria/mysql:5.5.61-linux-armv7l  --os linux --arch arm   --variant v7
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate bengennaria/mysql:5 bengennaria/mysql:5.5.61-linux-aarch64 --os linux --arch arm64 --variant v8
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push bengenanria/mysql:5
 # 	# Latest
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend biarms/mysql biarms/mysql:5.5.60-linux-armv6l biarms/mysql:5.5.61-linux-armv7l biarms/mysql:5.5.61-linux-aarch64
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate biarms/mysql biarms/mysql:5.5.60-linux-armv6l  --os linux --arch arm   --variant v6
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate biarms/mysql biarms/mysql:5.5.61-linux-armv7l  --os linux --arch arm   --variant v7
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate biarms/mysql biarms/mysql:5.5.61-linux-aarch64 --os linux --arch arm64 --variant v8
-# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push biarms/mysql
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend bengennaria/mysql bengennaria/mysql:5.5.60-linux-armv6l bengennaria/mysql:5.5.61-linux-armv7l bengennaria/mysql:5.5.61-linux-aarch64
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate bengennaria/mysql bengennaria/mysql:5.5.60-linux-armv6l  --os linux --arch arm   --variant v6
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate bengennaria/mysql bengennaria/mysql:5.5.61-linux-armv7l  --os linux --arch arm   --variant v7
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate bengennaria/mysql bengennaria/mysql:5.5.61-linux-aarch64 --os linux --arch arm64 --variant v8
+# 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push bengennaria/mysql
