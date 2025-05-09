@@ -19,7 +19,7 @@ DOCKER_IMAGE_NAME = bengennaria/mysql
 DOCKER_IMAGE_VERSION ?=
 MYSQL_VERSION_ARM32V6 = 5.5.60
 MYSQL_VERSION_5_5 = 5.5.62
-MYSQL_VERSION_OTHER_ARCH = 5.7.33
+MYSQL_VERSION_OTHER_ARCH = 5.7.44
 DOCKER_FILE ?=
 DOCKER_IMAGE_TAGNAME = ${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_VERSION}${BETA_VERSION}
 # See https://www.gnu.org/software/make/manual/html_node/Shell-Function.html
@@ -37,14 +37,13 @@ test: test-all-images
 
 # Launch a local build as on circleci, that will call the default target, but inside the 'circleci build and test env'
 circleci-local-build: check-docker-login
-	@ circleci local execute -e DOCKER_USERNAME="${DOCKER_USERNAME}" -e DOCKER_PASSWORD="${DOCKER_PASSWORD}"
+	@ circleci local execute build -e DOCKER_USERNAME="${DOCKER_USERNAME}" -e DOCKER_PASSWORD="${DOCKER_PASSWORD}"
 
 check-binaries:
 	@ which docker > /dev/null || (echo "Please install docker before using this script" && exit 1)
 	@ which git > /dev/null || (echo "Please install git before using this script" && exit 2)
 	@ # deprecated: which manifest-tool > /dev/null || (echo "Ensure that you've got the manifest-tool utility in your path. Could be downloaded from  https://github.com/estesp/manifest-tool/releases/" && exit 3)
 	@ DOCKER_CLI_EXPERIMENTAL=enabled docker manifest --help | grep "docker manifest COMMAND" > /dev/null || (echo "docker manifest is needed. Consider upgrading docker" && exit 4)
-	@ DOCKER_CLI_EXPERIMENTAL=enabled docker version -f '{{.Client.Experimental}}' | grep "true" > /dev/null || (echo "docker experimental mode is not enabled" && exit 5)
 	# Debug info
 	@ echo "DOCKER_REGISTRY: ${DOCKER_REGISTRY}"
 	@ echo "BUILD_DATE: ${BUILD_DATE}"
@@ -138,7 +137,7 @@ create-and-push-manifests: #ideally, should reference 'check-docker-login' and '
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-arm64v8${BETA_VERSION}" --os linux --arch arm64 --variant v8
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}-linux-amd64${BETA_VERSION}" --os linux --arch amd64
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest push "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}"
-	# bengennaria/mysql:5.7.32 # It is a good idea to push this one at the end...
+	# bengennaria/mysql:5.7.44 # It is a good idea to push this one at the end...
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest create --amend "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm32v7${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-amd64${BETA_VERSION}"
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm32v7${BETA_VERSION}" --os linux --arch arm --variant v7
 	DOCKER_CLI_EXPERIMENTAL=enabled docker manifest annotate "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" "${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}-linux-arm64v8${BETA_VERSION}" --os linux --arch arm64 --variant v8
@@ -172,7 +171,7 @@ test-manifests:
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" | grep linux | wc -l | xargs) = 3
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" | grep -c "arm/v6") = 0
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_5_5}${BETA_VERSION}" | grep -c "arm/v7") = 1
-	# Same kind of tests of bengennaria/mysql:5.7.33
+	# Same kind of tests of bengennaria/mysql:5.7.44
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" | grep linux | wc -l | xargs) = 3
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" | grep -c "arm/v6") = 0
 	test $$(docker run --rm mplatform/mquery "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${MYSQL_VERSION_OTHER_ARCH}${BETA_VERSION}" | grep -c "arm/v7") = 1

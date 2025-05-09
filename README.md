@@ -56,24 +56,24 @@ Caution:
     Image: bengennaria/mysql:5
      * Supported platforms:
        - linux/arm/v6  # => mysql version 5.5.60
-       - linux/amd64   # => mysql version 5.7.33
-       - linux/arm64   # => mysql version 5.7.33
+       - linux/amd64   # => mysql version 5.7.44
+       - linux/arm64   # => mysql version 5.7.44
     ```
   In other words, `docker run -it --rm bengennaria/mysql:5 --version` will return:
     1. '5.5.60' on arm32v6 devices
     2. '5.5.60' on arm32v7 devices (because of our workaround about https://github.com/biarms/mysql/issues/4 issue)
     3. '5.7.33' on arm64v8 devices
     4. '5.7.33' on x86_64 devices
-- Be aware no arm32v6 image is build for the 5.7 and 5.7.33 releases ! In other words, `docker run --rm mplatform/mquery bengennaria/mysql:5.7.33` (as well as `docker run --rm mplatform/mquery bengennaria/mysql:5.7`) will return something similar to:
+- Be aware no arm32v6 image is build for the 5.7 and 5.7.44 releases ! In other words, `docker run --rm mplatform/mquery bengennaria/mysql:5.7.44` (as well as `docker run --rm mplatform/mquery bengennaria/mysql:5.7`) will return something similar to:
     ``` 
     Image: bengennaria/mysql:5.7.33
      * Manifest List: Yes
      * Supported platforms:
-       - linux/amd64    # => mysql version 5.7.33
-       - linux/arm/v7   # => mysql version 5.7.33
-       - linux/arm64    # => mysql version 5.7.33
+       - linux/amd64    # => mysql version 5.7.44
+       - linux/arm/v7   # => mysql version 5.7.44
+       - linux/arm64    # => mysql version 5.7.44
     ```
-  Which means that `docker run -it --rm bengennaria/mysql:5.7 --version` (or `docker run -it --rm bengennaria/mysql:5.7.33 --version`) will return: 
+  Which means that `docker run -it --rm bengennaria/mysql:5.7 --version` (or `docker run -it --rm bengennaria/mysql:5.7.44 --version`) will return: 
     1. an error on arm32v6 devices (so it will not work on armv6 devices like rpi zero or rpi one)
     2. '5.7.33' on arm32v7 devices (like Odroid, or rpi2, rpi3, rpi4 running a 32 bits OS)
     3. '5.7.33' on arm64v8 devices (like rpi2, rpi3, rpi4 running a 64 bits OS)
@@ -102,12 +102,12 @@ Caution:
 |                                                 | *arm32v6* | *arm32v7*  | *arm64v8* | *amd64*  |
 |-------------------------------------------------|-----------|------------|-----------|----------|
 | `docker run --rm bengennaria/mysql --version`        |  5.5.60   | 5.5.60 (1) |  5.7.30   |  5.7.30  |
-| `docker run --rm bengennaria/mysql:5 --version`      |  5.5.60   | 5.5.60 (1) |  5.7.33   |  5.7.33  |
+| `docker run --rm bengennaria/mysql:5 --version`      |  5.5.60   | 5.5.60 (1) |  5.7.44   |  5.7.44  |
 | `docker run --rm bengennaria/mysql:5.5 --version`    |  5.5.60   | 5.5.60 (2) |  5.5.62   |  5.5.62  |
 | `docker run --rm bengennaria/mysql:5.5.62 --version` |   NOK     | 5.5.62     |  5.5.62   |  5.5.62  |
-| `docker run --rm bengennaria/mysql:5.7 --version`    |   NOK     | 5.7.33     |  5.7.33   |  5.7.33  |
+| `docker run --rm bengennaria/mysql:5.7 --version`    |   NOK     | 5.7.44     |  5.7.44   |  5.7.44  |
 | `docker run --rm bengennaria/mysql:5.7.30 --version` |   NOK     | 5.7.30     |  5.7.30   |  5.7.30  |
-| `docker run --rm bengennaria/mysql:5.7.33 --version` |   NOK     | 5.7.33     |  5.7.33   |  5.7.33  |
+| `docker run --rm bengennaria/mysql:5.7.44 --version` |   NOK     | 5.7.44     |  5.7.44   |  5.7.44  |
 
 - (1) Should be 5.7.33 (build for arm32v7), but is 5.5.60 (build of arm32v6) because of 'docker pull' issue. See https://github.com/biarms/mysql/issues/4 for more details.
 - (2) Should be 5.5.62 (build for arm32v7), but is 5.5.60 (build of arm32v6) because of 'docker pull' issue. See https://github.com/biarms/mysql/issues/4 for more details.
@@ -148,7 +148,7 @@ docker run -it --rm bengennaria/mysql:5.5.62-linux-arm32v7 --version
 
 Thanks to CircleCi client: 
 ```
-circleci local execute -e DOCKER_USERNAME=******** -e DOCKER_PASSWORD=********
+circleci local execute build -e DOCKER_USERNAME=******** -e DOCKER_PASSWORD=********
 ```
 or
 ```
